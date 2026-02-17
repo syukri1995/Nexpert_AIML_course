@@ -1,0 +1,50 @@
+Topic,Description,Link
+Day 1,Introduction to Python Code File,https://colab.research.google.com/drive/1YQ85-fjA7ut2iCtmGQV477Q9cJQSbT9r?usp=sharing
+Day 3,Loops & Decision Making Code File 1,https://colab.research.google.com/drive/1YQ85-fjA7ut2iCtmGQV477Q9cJQSbT9r?usp=sharing
+Day 3,Loops & Decision Making Code File 2,https://colab.research.google.com/drive/1DcJGcXksc_4l_hU4TBeIbCDT95OEuKhp?usp=sharing
+Day 4,While Loop & Games Code File,https://colab.research.google.com/drive/1DcJGcXksc_4l_hU4TBeIbCDT95OEuKhp?usp=sharing
+Day 5,Data Structures (List/Tuple),https://colab.research.google.com/drive/1rg5sNVJZKb4nIU1pY405rVfrtneR_6Td?usp=sharing
+Day 7,Functions Part 1 Code File,https://colab.research.google.com/drive/1ZXmuMzJLzIeTdDodobz_tUVWsU2ZirWJ?usp=sharing
+Day 9,OOPs & Inheritance Assignment 1,https://colab.research.google.com/drive/1JhppNxvkt3eWyxZiC8lsNcAsNy4t7X7H?usp=sharing
+Day 9,OOPs & Inheritance Code File 2,https://colab.research.google.com/drive/1cZdluO09_L6tpIFC09C5hQEGiTHg-QM5?usp=sharing
+Day 10,Exception Handling Code File,https://colab.research.google.com/drive/1cZdluO09_L6tpIFC09C5hQEGiTHg-QM5?usp=sharing
+Day 11,Python APIs & Modules,https://colab.research.google.com/drive/1-4ZJpNokAZIsnFbSc4Zl5FRV42jizpqI?usp=sharing
+Day 11,Tkinter Code File (Jupyter),https://drive.google.com/file/d/1VTNmMsHB7nbHs_ldM-MABeJ9g8lTLG6e/view?usp=sharing
+Day 15,Matplotlib Part 1,https://colab.research.google.com/drive/19jHYpNEJLE1lqVK6_sD8EJpM9SzA3fEZ?usp=sharing
+Day 15,Matplotlib Part 2 / Seaborn,https://colab.research.google.com/drive/1iURaGjAaEmsGxi6pfNRDdUmh8nbVhGU9?usp=sharing
+Day 16,EDA Part 1 Code File,https://colab.research.google.com/drive/1-TTnXbSyvhP_cWjYUU3gtZCJ2eX7tBHz?usp=sharing
+Day 17,EDA Part 2 (Missing Data),https://colab.research.google.com/drive/15JI7a7_Zjywg-YalahoUek7j2sJBb40d?usp=sharing
+Day 18,Machine Learning Intro Part 1,https://colab.research.google.com/drive/12WaaiEBXxrfzLGgs1QS4B794FRlp8nkF?usp=sharing
+Day 19,Machine Learning Part 2,https://colab.research.google.com/drive/12WaaiEBXxrfzLGgs1QS4B794FRlp8nkF?usp=sharing
+Day 20,Polynomial Regression Part 1,https://colab.research.google.com/drive/1LSVjfguGsFBYWLwfrCXOH7fhQYX7l22A?usp=sharing
+Day 21,Multiple Linear Regression Part 1,https://colab.research.google.com/drive/1_3OQqRw9NztyMbFSGbmyXTKvGTmbnkTY?usp=sharing
+Day 23,Using Pickle Code File,https://colab.research.google.com/drive/1oLI2_tPYNBjTZzjxpTlJ8_aCWIWpyIbq?usp=sharing
+Day 24,Logistic Regression (Classification),https://colab.research.google.com/drive/1hn-jIdTL2JuyVA7IT0B4-Qe1dMEPYrLZ?usp=sharing
+Day 29,Unsupervised ML Part 2 (KMeans),https://colab.research.google.com/drive/15Uas-Ada76F4mqQt6K_5GIUdfSXb4L4f?usp=sharing
+Day 30,Association Analysis (Apriori),https://colab.research.google.com/drive/1bJ-H5j-T_bU567wmkVuAHGYVheg2d_hu?usp=sharing
+Day 30,Association Analysis (FP-Growth),https://colab.research.google.com/drive/17LMSaY3C0WKmKvAyioLsS1ngxn2Mcbg5?usp=sharing
+NLP,NLP Code File 1,https://colab.research.google.com/drive/19bH-mwHReOer24uHGnSaMt5eIg9iAtQT?usp=sharing
+NLP,NLP Code File 2,https://colab.research.google.com/drive/1sd1WbWlmUyaFf9ZQqw6AFYnTks4qrBjJ?usp=sharing
+Day 40,OpenAI / GCP / Make Code File,https://nexpertsacademy0-my.sharepoint.com/:u:/g/personal/yash_nexpertsacademy_com/IQB50p2U4P_eS7kBpZNHwwx1ASG1UHwW5D7-Rs68rpoDoJI?e=CnydYr
+General,Google Colab Platform,https://colab.research.google.com/
+Installation,Python Download (Windows),https://www.python.org/downloads/
+Installation,Anaconda Download,https://www.anaconda.com/download/success
+Practice,Decision Making Exercises,https://csiplearninghub.com/python-if-else-conditional-statement-practice/
+Practice,Loop Exercises,https://www.w3resource.com/python-exercises/python-conditional-statements-and-loop-exercises.php
+Practice,Data Structure Exercises,https://pynative.com/python-data-structure-exercise-for-beginners/
+Assignments,Sample Excel Data (XLSX),https://raw.githubusercontent.com/yash240990/Python/master/sampleExcelData.xlsx
+Assignments,Position Salaries (CSV),https://raw.githubusercontent.com/yash240990/Python/master/Position_Salaries.csv
+Assignments,Iris Data (TXT),https://raw.githubusercontent.com/yashy1626/ds_dataset/refs/heads/main/iris.txt
+Assignments,Simple JSON,https://raw.githubusercontent.com/yash240990/Python/master/simple.json
+Assignments,Step-by-Step EDA Tutorial,https://www.analyticsvidhya.com/blog/2022/07/step-by-step-exploratory-data-analysis-eda-using-python/
+Assignments,Used Cars CSV (for EDA),https://raw.githubusercontent.com/yashy1626/ds_dataset/refs/heads/main/used_cars.csv
+Assignments,Data Cleaning Tutorial,https://realpython.com/python-data-cleaning-numpy-pandas/
+Assignments,Decision Tree Tutorial,https://www.datacamp.com/tutorial/decision-tree-classification-python
+Assignments,Random Forest Tutorial,https://www.datacamp.com/tutorial/random-forests-classifier-python
+Power BI,Chicago Crime Portal,https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-Present/ijzp-q8t2/about_data
+Power BI,Netflix Movies and TV Shows,https://www.kaggle.com/datasets/shivamb/netflix-shows
+Power BI,MySQL Installation on MacOS (Video),https://youtu.be/oLTdFZ4gg0Y
+Cloud,GCP Tutorial (Video),https://youtu.be/lvZk_sc8u5I
+Resume,LinkedIn Setup (Video),https://youtu.be/hNzpEeU3a4I
+Resume,LinkedIn Optimization Part 1 (Video),https://youtu.be/K6uO-52UHTw
+Resume,LinkedIn Optimization Part 2 (Video),https://youtu.be/dYsLfNSZHtA
