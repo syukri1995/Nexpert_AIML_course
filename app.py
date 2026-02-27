@@ -2,6 +2,8 @@ import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
 import io
+import json
+from thefuzz import process, fuzz
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -16,12 +18,13 @@ st.markdown("""
 <style>
     /* Card Styles */
     .resource-card {
-        background-color: #f0f2f6;
+        background-color: var(--secondary-background-color);
         padding: 1.5rem;
         border-radius: 10px;
         margin-bottom: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s, opacity 0.6s ease-out, transform 0.6s ease-out;
+        border: 1px solid rgba(128, 128, 128, 0.2);
 
         /* Initial state for fade-in animation */
         opacity: 0;
@@ -36,19 +39,20 @@ st.markdown("""
 
     .resource-card:hover {
         transform: translateY(-5px); /* Slightly more lift on hover */
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
     }
 
     .resource-title {
         font-size: 1.2rem;
         font-weight: bold;
-        color: #1f77b4;
+        color: var(--text-color);
         margin-bottom: 0.5rem;
     }
     .resource-desc {
-        color: #555;
+        color: var(--text-color);
         font-size: 0.95rem;
         margin-bottom: 1rem;
+        opacity: 0.8;
     }
     .tag {
         display: inline-block;
@@ -212,10 +216,23 @@ filtered_df = df[
 ]
 
 if search_query:
-    filtered_df = filtered_df[
-        filtered_df['Description'].str.contains(search_query, case=False, na=False) |
-        filtered_df['Topic'].str.contains(search_query, case=False, na=False)
-    ]
+    # Use fuzzy matching for filtering
+    # We'll create a new column combining text fields to search against
+    filtered_df['SearchText'] = filtered_df['Topic'].fillna('') + " " + filtered_df['Description'].fillna('')
+
+    # Extract matches with a score > 60
+    # process.extract returns a list of tuples (match, score, index)
+    # But filtering a dataframe is easier if we apply a function row-wise
+
+    def get_fuzzy_score(row_text, query):
+        return fuzz.partial_token_set_ratio(query.lower(), row_text.lower())
+
+    # Calculate scores
+    filtered_df['MatchScore'] = filtered_df['SearchText'].apply(lambda x: get_fuzzy_score(x, search_query))
+
+    # Filter and sort by score
+    filtered_df = filtered_df[filtered_df['MatchScore'] >= 60].sort_values(by='MatchScore', ascending=False)
+
 
 # --- Main Interface with Tabs ---
 tab1, tab2, tab3, tab4 = st.tabs(["📚 Browse Resources", "⭐ My Learning", "📊 Analytics", "➕ Suggest Resource"])
@@ -227,7 +244,16 @@ with tab1:
         st.subheader(f"Showing {len(filtered_df)} Resources")
     with col2:
         # Download Button
-        csv = filtered_df.drop(columns=['Tag Class']).to_csv(index=False).encode('utf-8')
+        # Check if 'MatchScore' or 'SearchText' exist and drop them before export
+        export_df = filtered_df.copy()
+        if 'Tag Class' in export_df.columns:
+            export_df = export_df.drop(columns=['Tag Class'])
+        if 'SearchText' in export_df.columns:
+            export_df = export_df.drop(columns=['SearchText'])
+        if 'MatchScore' in export_df.columns:
+            export_df = export_df.drop(columns=['MatchScore'])
+
+        csv = export_df.to_csv(index=False).encode('utf-8')
         st.download_button(
             label="⬇️ Download CSV",
             data=csv,
@@ -273,9 +299,43 @@ with tab1:
                                 st.session_state.completed.add(row['ID'])
                             st.rerun()
 
+                    # Embedded Video Preview
+                    if "Video" in row['Resource Type']:
+                        with st.expander("🎥 Preview Video"):
+                            st.video(row['Link'])
+
 # --- TAB 2: My Learning ---
 with tab2:
     st.header("My Learning Progress")
+
+    # Data Persistence: Export/Import
+    with st.expander("💾 Manage Progress (Export/Import)"):
+        c1, c2 = st.columns(2)
+        with c1:
+            # Export
+            data_to_export = {
+                "favorites": list(st.session_state.favorites),
+                "completed": list(st.session_state.completed)
+            }
+            json_str = json.dumps(data_to_export)
+            st.download_button(
+                label="⬇️ Export Progress",
+                data=json_str,
+                file_name='yash_resources_progress.json',
+                mime='application/json',
+            )
+        with c2:
+            # Import
+            uploaded_file = st.file_uploader("⬆️ Import Progress (JSON)", type=['json'])
+            if uploaded_file is not None:
+                try:
+                    data = json.load(uploaded_file)
+                    st.session_state.favorites = set(data.get("favorites", []))
+                    st.session_state.completed = set(data.get("completed", []))
+                    st.success("Progress restored successfully!")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error importing file: {e}")
 
     # Calculate Progress
     total_favorites = len(st.session_state.favorites)
