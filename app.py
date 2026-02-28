@@ -4,6 +4,7 @@ import pandas as pd
 import io
 import json
 from thefuzz import process, fuzz
+import plotly.express as px
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -207,6 +208,12 @@ with st.sidebar:
     selected_types = st.multiselect("Filter by Type:", all_types, default=all_types)
 
     st.markdown("---")
+
+    # Sorting Options
+    sort_options = ["Relevance", "Topic (A-Z)", "Topic (Z-A)"]
+    selected_sort = st.selectbox("Sort By:", sort_options, index=0)
+
+    st.markdown("---")
     st.caption("Data extracted from course materials.")
 
 # --- Filtering Logic ---
@@ -230,9 +237,19 @@ if search_query:
     # Calculate scores
     filtered_df['MatchScore'] = filtered_df['SearchText'].apply(lambda x: get_fuzzy_score(x, search_query))
 
-    # Filter and sort by score
-    filtered_df = filtered_df[filtered_df['MatchScore'] >= 60].sort_values(by='MatchScore', ascending=False)
+    # Filter
+    filtered_df = filtered_df[filtered_df['MatchScore'] >= 60]
+else:
+    # If no search, set a dummy MatchScore for sorting consistency
+    filtered_df['MatchScore'] = 100
 
+# Apply Sorting
+if selected_sort == "Relevance":
+    filtered_df = filtered_df.sort_values(by=['MatchScore', 'Topic'], ascending=[False, True])
+elif selected_sort == "Topic (A-Z)":
+    filtered_df = filtered_df.sort_values(by='Topic', ascending=True)
+elif selected_sort == "Topic (Z-A)":
+    filtered_df = filtered_df.sort_values(by='Topic', ascending=False)
 
 # --- Main Interface with Tabs ---
 tab1, tab2, tab3, tab4 = st.tabs(["📚 Browse Resources", "⭐ My Learning", "📊 Analytics", "➕ Suggest Resource"])
@@ -264,10 +281,33 @@ with tab1:
     if filtered_df.empty:
         st.info("No resources match your filters.")
     else:
+        # Pagination
+        import math
+        items_per_page = 12
+        total_items = len(filtered_df)
+        total_pages = math.ceil(total_items / items_per_page)
+
+        if 'current_page' not in st.session_state:
+            st.session_state.current_page = 1
+        if st.session_state.current_page > total_pages:
+            st.session_state.current_page = 1
+
+        # Pagination controls
+        if total_pages > 1:
+            pc1, pc2, pc3 = st.columns([2, 1, 2])
+            with pc2:
+                page_options = list(range(1, total_pages + 1))
+                st.session_state.current_page = st.selectbox("Page", page_options, index=st.session_state.current_page - 1, label_visibility="collapsed")
+
+        start_idx = (st.session_state.current_page - 1) * items_per_page
+        end_idx = start_idx + items_per_page
+
+        paginated_df = filtered_df.iloc[start_idx:end_idx]
+
         # Grid Layout for Cards
         cols = st.columns(3)  # 3 columns for desktop view
-        for idx, row in filtered_df.iterrows():
-            with cols[idx % 3]:
+        for i, (idx, row) in enumerate(paginated_df.iterrows()):
+            with cols[i % 3]:
                 # Card Container
                 with st.container():
                     st.markdown(f"""
@@ -375,13 +415,18 @@ with tab3:
 
     with col1:
         st.subheader("Resources by Type")
-        type_counts = df['Resource Type'].value_counts()
-        st.bar_chart(type_counts)
+        type_counts = df['Resource Type'].value_counts().reset_index()
+        type_counts.columns = ['Resource Type', 'Count']
+        fig_type = px.pie(type_counts, values='Count', names='Resource Type', hole=0.3)
+        st.plotly_chart(fig_type, use_container_width=True)
 
     with col2:
         st.subheader("Resources by Topic")
-        topic_counts = df['Topic'].value_counts().head(10) # Top 10 topics
-        st.bar_chart(topic_counts, horizontal=True)
+        topic_counts = df['Topic'].value_counts().head(10).reset_index()
+        topic_counts.columns = ['Topic', 'Count']
+        fig_topic = px.bar(topic_counts, x='Count', y='Topic', orientation='h')
+        fig_topic.update_layout(yaxis={'categoryorder':'total ascending'})
+        st.plotly_chart(fig_topic, use_container_width=True)
 
 # --- TAB 4: Suggest Resource ---
 with tab4:
@@ -409,8 +454,44 @@ with tab4:
                 st.warning("Please fill in all fields.")
 
     if st.session_state.suggested_resources:
-        st.subheader("Your Suggestions (Session Only)")
-        st.dataframe(pd.DataFrame(st.session_state.suggested_resources))
+        st.subheader("Manage Suggestions")
+        st.info("In a real application, this would be restricted to admins. Here you can review and append suggestions to the dataset.")
+
+        # Display suggestions as a dataframe
+        sugg_df = pd.DataFrame(st.session_state.suggested_resources)
+        st.dataframe(sugg_df)
+
+        pending_suggestions = [s for s in st.session_state.suggested_resources if s['Status'] == 'Pending']
+
+        if pending_suggestions:
+            st.markdown("### Approve Suggestions")
+            for idx, sugg in enumerate(pending_suggestions):
+                with st.container():
+                    col_info, col_action = st.columns([4, 1])
+                    with col_info:
+                        st.write(f"**{sugg['Topic']}**: {sugg['Description']} ([Link]({sugg['Link']}))")
+                    with col_action:
+                        if st.button("Approve & Add", key=f"approve_{idx}"):
+                            # Add to CSV
+                            new_row = pd.DataFrame([{
+                                "Topic": sugg['Topic'],
+                                "Description": sugg['Description'],
+                                "Link": sugg['Link']
+                            }])
+                            try:
+                                import os
+                                # Append to CSV
+                                new_row.to_csv("Yash_Resources.csv", mode='a', header=not os.path.exists("Yash_Resources.csv"), index=False)
+
+                                # Update session state status
+                                sugg['Status'] = 'Approved'
+                                st.success(f"'{sugg['Topic']}' added to resources!")
+
+                                # Clear cache to reload new data on next run
+                                st.cache_data.clear()
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Error saving to CSV: {e}")
 
 # --- Footer ---
 st.markdown("---")
